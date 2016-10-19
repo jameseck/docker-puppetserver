@@ -1,0 +1,9 @@
+version: '2'
+services:
+  puppetserver:
+    build: .
+    image: jameseckersall/puppetserver
+    ports:
+    - 8140:8140
+    environment:
+      DEBUG: "no"
