@@ -3,7 +3,7 @@ services:
   puppetserver:
     build: .
     image: jameseckersall/puppetserver
+    hostname: puppetserv.test
     ports:
+    - 8080:8080
     - 8140:8140
-    environment:
-      DEBUG: "no"

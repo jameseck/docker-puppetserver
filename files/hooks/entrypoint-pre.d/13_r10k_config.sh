@@ -1,0 +1,5 @@
+#!/bin/sh
+
+GIT_CONTROL_REPO="${GIT_CONTROL_REPO_USER}@${GIT_CONTROL_REPO_HOST}:${GIT_CONTROL_REPO_PATH}"
+
+sed -i -e "s|__GIT__CONTROL__REPO__|${GIT_CONTROL_REPO}|g" /etc/puppetlabs/r10k/r10k.yaml

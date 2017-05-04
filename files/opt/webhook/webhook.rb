@@ -27,6 +27,6 @@ end
 
 # Some defines.
 def deployEnv(branchname)
-  deployCmd = "/usr/local/bin/r10k deploy environment #{branchname} -pv"
+  deployCmd = "scl enable rh-ruby23 \"r10k deploy environment #{branchname} -pv\""
   `#{deployCmd}`
 end

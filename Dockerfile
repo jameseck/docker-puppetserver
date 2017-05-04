@@ -6,25 +6,30 @@ MAINTAINER James Eckersall <james.eckersall@gmail.com>
 COPY files /
 
 RUN \
-  chmod 0777 -R /var/log /run && \
-  curl -4 https://yum.puppetlabs.com/RPM-GPG-KEY-puppet -o /tmp/RPM-GPG-KEY-puppet && \
-  curl -4 https://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs -o /tmp/RPM-GPG-KEY-puppetlabs && \
-  rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 /tmp/RPM-GPG-KEY-* && \
-  rm /tmp/RPM-GPG-KEY-* && \
-  yum install -y epel-release && \
-  yum install -y https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm && \
+  yum install -y epel-release centos-release-scl https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm && \
   yum install -y puppetserver && \
-  yum install -y ruby
+  yum install -y rh-ruby23-ruby rh-ruby23-ruby-devel rh-ruby23-rubygems git && \
+  yum install -y cmake make gcc gcc-c++ && \
+  scl enable rh-ruby23 "gem install sinatra r10k thin --no-ri --no-rdoc" && \
+  yum remove -y gcc gcc-c++ cmake make cpp glibc-devel glibc-headers kernel-headers libgomp libmpc libstdc++-devel mpfr && \
+  chmod 0777 -R /var/log /run /etc/passwd /etc/puppetlabs
 
-RUN \
-  gem install r10k sinatra thin --no-rdoc --no-ri
+ENV \
+  WEBHOOK_PORT=8080 \
+  CA_ENABLED=1 \
+  PUPPETSERVER_PORT=8140 \
+  PUPPETSERVER_SSL_CERT="" \
+  PUPPETSERVER_SSL_KEY="" \
+  PUPPETSERVER_SSL_CA_CERT="" \
+  GIT_CONTROL_REPO_VERIFY_HOST_FINGERPRINT=1 \
+  GIT_CONTROL_REPO_TYPE=ssh \
+  GIT_CONTROL_REPO_HOST_SSH_FINGERPRINT="" \
+  GIT_CONTROL_REPO_USER=git \
+  GIT_CONTROL_REPO_HOST=git.public.glo.gb \
+  GIT_CONTROL_REPO_PATH=James.eckersall/puppettest.git \
+  HOME=/tmp
 
-ENV WEBHOOK_PORT 8080
-ENV PUPPETMASTER_PORT 8140
-
-EXPOSE ${WEBHOOK_PORT} ${PUPPETMASTER_PORT}
-
-#ENTRYPOINT [ "/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf" ]
+EXPOSE ${WEBHOOK_PORT} ${PUPPETSERVER_PORT}
 
 # curl -k https://localhost:8140/status/v1/services
 # {"status-service":{"service_version":"0.3.5","service_status_version":1,"detail_level":"info","state":"running","status":{}}}

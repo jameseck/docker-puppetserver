@@ -1,0 +1,9 @@
+---
+cachedir: /var/cache/r10k
+
+sources:
+  production:
+    remote: '__GIT__CONTROL__REPO__'
+    basedir: /etc/puppetlabs/puppet/environments
+git:
+  private_key: /secret/r10k_git_private_key
